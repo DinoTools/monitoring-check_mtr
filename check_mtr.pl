@@ -91,6 +91,12 @@ $mp->add_arg(
     help => 'Use the specified port. Only aplicable if TCP or UDP set.'
 );
 
+$mp->add_arg(
+    spec    => 'cycles=i',
+    help    => 'Number of cycles to check hosts and the reliability. (Default: 4)',
+    default => 4,
+);
+
 $mp->getopts;
 
 check();
@@ -102,7 +108,8 @@ sub check
 {
     my @cmd;
     push(@cmd, 'mtr');
-    push(@cmd, ('-n', '-c', '4', '--report', '--report-wide'));
+    push(@cmd, ('-n', '--report', '--report-wide'));
+    push(@cmd, ('--report-cycles', $mp->opts->cycles));
     if ($mp->opts->tcp && $mp->opts->udp) {
         wrap_exit(UNKNOWN, 'TCP and UDP mode can not be used in combination');
     } elsif ($mp->opts->tcp) {
