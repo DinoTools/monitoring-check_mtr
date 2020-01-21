@@ -117,7 +117,7 @@ sub check
                     critical => $mp->opts->latency_crit
                 );
                 $mp->add_perfdata(
-                    label    => "latency_$hop_count",
+                    label    => "hop_${hop_count}_rta",
                     value    => $latency_value,
                     warning  => $mp->opts->latency_warn,
                     critical => $mp->opts->latency_crit,
@@ -129,7 +129,7 @@ sub check
                     critical => $mp->opts->packet_loss_crit,
                 );
                 $mp->add_perfdata(
-                    label    => "packet_loss_$hop_count",
+                    label    => "hop_${hop_count}_pl",
                     value    => $packet_loss_value,
                     warning  => $mp->opts->packet_loss_warn,
                     critical => $mp->opts->packet_loss_crit,
