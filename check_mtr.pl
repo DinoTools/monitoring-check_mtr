@@ -76,6 +76,20 @@ $mp->add_arg(
     help => '',
 );
 
+$mp->add_arg(
+    spec => 'tcp',
+    help => 'Use TCP instead of ICMP Echo. (Default port: 443)',
+);
+
+$mp->add_arg(
+    spec => 'udp',
+    help => 'Use UDP instead of ICMP Echo. (Default port: 53)',
+);
+
+$mp->add_arg(
+    spec => 'port=i',
+    help => 'Use the specified port. Only aplicable if TCP or UDP set.'
+);
 
 $mp->getopts;
 
@@ -89,6 +103,23 @@ sub check
     my @cmd;
     push(@cmd, 'mtr');
     push(@cmd, ('-n', '-c', '4', '--report', '--report-wide'));
+    if ($mp->opts->tcp && $mp->opts->udp) {
+        wrap_exit(UNKNOWN, 'TCP and UDP mode can not be used in combination');
+    } elsif ($mp->opts->tcp) {
+        push(@cmd, '--tcp');
+        my $port = $mp->opts->port;
+        if (!defined $port) {
+            $port = 443;
+        }
+        push(@cmd, ('--port', $port));
+    } elsif ($mp->opts->udp) {
+        push(@cmd, '--udp');
+        my $port = $mp->opts->port;
+        if (!defined $port) {
+            $port = 53;
+        }
+        push(@cmd, ('--port', $port));
+    }
     push(@cmd, $mp->opts->hostname);
 
     open(my $pipe,'-|',@cmd) or die "Can't start process: $!";
