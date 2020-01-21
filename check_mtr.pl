@@ -97,6 +97,11 @@ $mp->add_arg(
     default => 4,
 );
 
+$mp->add_arg(
+    spec => 'dns',
+    help => 'Try to resolve the hostnames of the hops.',
+);
+
 $mp->getopts;
 
 check();
@@ -108,8 +113,13 @@ sub check
 {
     my @cmd;
     push(@cmd, 'mtr');
-    push(@cmd, ('-n', '--report', '--report-wide'));
+    push(@cmd, ('--report', '--report-wide'));
     push(@cmd, ('--report-cycles', $mp->opts->cycles));
+    if ($mp->opts->dns) {
+        push(@cmd, '--show-ip');
+    } else {
+        push(@cmd, '--no-dns');
+    }
     if ($mp->opts->tcp && $mp->opts->udp) {
         wrap_exit(UNKNOWN, 'TCP and UDP mode can not be used in combination');
     } elsif ($mp->opts->tcp) {
@@ -136,10 +146,10 @@ sub check
     my $hop_reachable = 1;
     foreach my $line (@output) {
         my $status = OK;
-        if ($line =~ /^\s*(\d+).\s*[|-]+?\s+([0-9a-f.:\?]+)\s+(\d+.\d+)%?\s+(\d+)\s+(\d+.\d+)\s+(\d+.\d+)\s+(.*?)\s.*?$/) {
+        if ($line =~ /^\s*(\d+).\s*[|-]+?\s+(([0-9a-f.:\?]+)|(\S+)\s+\(([0-9a-f.:\?]+)\))\s+(\d+.\d+)%?\s+(\d+)\s+(\d+.\d+)\s+(\d+.\d+)\s+(.*?)\s.*?$/) {
             my $host_address = $2;
-            my $latency_value = $6;
-            my $packet_loss_value = $3;
+            my $latency_value = $9;
+            my $packet_loss_value = $6;
             my $latency_status = OK;
             my $packet_loss_status = OK;
 
