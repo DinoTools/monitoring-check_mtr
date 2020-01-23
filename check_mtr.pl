@@ -229,6 +229,7 @@ sub check
                 $status_msg = ' <- !!! Unknown !!!';
             }
             chomp($line);
+            $line = $line =~ s/\|--//r;
             push(@g_long_message, $line.$status_msg);
         }
     }
