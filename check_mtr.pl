@@ -56,23 +56,23 @@ $mp->add_arg(
 );
 
 $mp->add_arg(
-    spec => 'latency_warn=s',
+    spec => 'latency-warn=s',
     help => '',
 
 );
 
 $mp->add_arg(
-    spec => 'latency_crit=s',
+    spec => 'latency-crit=s',
     help => '',
 );
 
 $mp->add_arg(
-    spec => 'packet_loss_warn=s',
+    spec => 'packet-loss-warn=s',
     help => '',
 );
 
 $mp->add_arg(
-    spec => 'packet_loss_crit=s',
+    spec => 'packet-loss-crit=s',
     help => '',
 );
 
@@ -161,26 +161,26 @@ sub check
                 $hop_reachable = 1;
                 $latency_status = $mp->check_threshold(
                     check    => $latency_value,
-                    warning  => $mp->opts->latency_warn,
-                    critical => $mp->opts->latency_crit
+                    warning  => $mp->opts->get('latency-warn'),
+                    critical => $mp->opts->get('latency-crit'),
                 );
                 $mp->add_perfdata(
                     label    => "hop_${hop_count}_rta",
                     value    => $latency_value,
-                    warning  => $mp->opts->latency_warn,
-                    critical => $mp->opts->latency_crit,
+                    warning  => $mp->opts->get('latency-warn'),
+                    critical => $mp->opts->get('latency-crit'),
                 );
 
                 $packet_loss_status = $mp->check_threshold(
                     check    => $packet_loss_value,
-                    warning  => $mp->opts->packet_loss_warn,
-                    critical => $mp->opts->packet_loss_crit,
+                    warning  => $mp->opts->get('packet-loss-warn'),
+                    critical => $mp->opts->get('packet-loss-crit'),
                 );
                 $mp->add_perfdata(
                     label    => "hop_${hop_count}_pl",
                     value    => $packet_loss_value,
-                    warning  => $mp->opts->packet_loss_warn,
-                    critical => $mp->opts->packet_loss_crit,
+                    warning  => $mp->opts->get('packet-loss-warn'),
+                    critical => $mp->opts->get('packet-loss-crit'),
                 );
             }
 
