@@ -144,6 +144,9 @@ sub check
     close($pipe) or die "Broken pipe: $!";
     my $hop_count = 0;
     my $hop_reachable = 1;
+
+    # Heading in the long output
+    push(@g_long_message, "Hops:");
     foreach my $line (@output) {
         my $status = OK;
         if ($line =~ /^\s*(\d+).\s*[|-]+?\s+(([0-9a-f.:\?]+)|(\S+)\s+\(([0-9a-f.:\?]+)\))\s+(\d+.\d+)%?\s+(\d+)\s+(\d+.\d+)\s+(\d+.\d+)\s+(.*?)\s.*?$/) {
